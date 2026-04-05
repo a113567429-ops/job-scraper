@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: job-scraper
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --chdir web app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: WEB_USER
+        value: admin
+      - key: WEB_PASSWORD
+        sync: false   # 在 Render 控制台手动填入

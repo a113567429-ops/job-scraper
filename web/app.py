@@ -4,13 +4,34 @@ Flask 网页 Demo — 金融实习职位看板
 访问: http://localhost:5000
 """
 
-import sys, os
+import sys, os, hashlib
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, Response
 from job_scraper.storage import database
 
 app = Flask(__name__)
+
+# ── 密码保护 ──────────────────────────────────────────────
+WEB_USER     = os.getenv("WEB_USER",     "admin")
+WEB_PASSWORD = os.getenv("WEB_PASSWORD", "")   # 空 = 本地不需要密码
+
+def _check_auth(username, password):
+    return username == WEB_USER and password == WEB_PASSWORD
+
+def _require_auth():
+    return Response(
+        "请输入用户名和密码", 401,
+        {"WWW-Authenticate": 'Basic realm="Job Scraper"'}
+    )
+
+@app.before_request
+def auth_guard():
+    if not WEB_PASSWORD:          # 本地运行不拦截
+        return
+    auth = request.authorization
+    if not auth or not _check_auth(auth.username, auth.password):
+        return _require_auth()
 
 
 def load_jobs():
