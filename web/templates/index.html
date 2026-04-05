@@ -6,172 +6,114 @@
   <title>金融实习岗位看板</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f0f2f5; color: #1a1a2e; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f0f2f5;
-      color: #1a1a2e;
-    }
-
-    /* ── 顶部导航 ── */
     header {
       background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: white;
-      padding: 20px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      color: white; padding: 18px 32px;
+      display: flex; align-items: center; justify-content: space-between;
       box-shadow: 0 2px 12px rgba(0,0,0,0.3);
     }
-    header h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: 0.5px; }
+    header h1 { font-size: 1.35rem; font-weight: 600; }
     header h1 span { color: #e94560; }
-    .meta { font-size: 0.78rem; color: #aaa; margin-top: 2px; }
-
-    .header-stats { display: flex; gap: 12px; align-items: center; }
-    .badge {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
+    .meta { font-size: 0.75rem; color: #aaa; margin-top: 3px; }
+    .header-stats { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .badge { padding: 4px 11px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; }
     .badge-total   { background: #e94560; color: white; }
     .badge-intl    { background: #00b894; color: white; }
+    .badge-saved   { background: #fdcb6e; color: #2d3436; }
+    .badge-applied { background: #6c5ce7; color: white; }
 
-    /* ── 主体布局 ── */
-    .container { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 20px 16px; }
 
     /* ── 过滤栏 ── */
     .filters {
-      background: white;
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin-bottom: 20px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+      background: white; border-radius: 12px; padding: 14px 18px;
+      margin-bottom: 18px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
     .filters input, .filters select {
-      border: 1.5px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 0.9rem;
-      outline: none;
+      border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 7px 11px;
+      font-size: 0.88rem; outline: none; background: white; cursor: pointer;
       transition: border-color 0.2s;
-      background: white;
-      cursor: pointer;
     }
-    .filters input { flex: 1; min-width: 180px; cursor: text; }
+    .filters input { flex: 1; min-width: 160px; cursor: text; }
     .filters input:focus, .filters select:focus { border-color: #e94560; }
 
-    /* 签证切换按钮组 */
-    .visa-toggle { display: flex; gap: 0; border-radius: 8px; overflow: hidden; border: 1.5px solid #e0e0e0; }
-    .visa-toggle button {
-      border: none; padding: 8px 14px; font-size: 0.85rem; cursor: pointer;
-      background: white; color: #555; transition: background 0.15s, color 0.15s;
-      font-weight: 500;
+    .toggle-group { display: flex; border-radius: 8px; overflow: hidden; border: 1.5px solid #e0e0e0; }
+    .toggle-group button {
+      border: none; padding: 7px 12px; font-size: 0.82rem; cursor: pointer;
+      background: white; color: #555; transition: background 0.15s, color 0.15s; font-weight: 500;
     }
-    .visa-toggle button.active { background: #00b894; color: white; }
-    .visa-toggle button:not(:last-child) { border-right: 1.5px solid #e0e0e0; }
+    .toggle-group button:not(:last-child) { border-right: 1.5px solid #e0e0e0; }
+    .toggle-group button.active { background: #1a1a2e; color: white; }
+    .toggle-group button.active.visa { background: #00b894; }
+    .toggle-group button.active.status-saved { background: #fdcb6e; color: #2d3436; }
+    .toggle-group button.active.status-applied { background: #6c5ce7; }
 
-    .count-label {
-      margin-left: auto;
-      font-size: 0.85rem;
-      color: #888;
-      white-space: nowrap;
-    }
+    .count-label { margin-left: auto; font-size: 0.82rem; color: #888; white-space: nowrap; }
     .count-label b { color: #e94560; }
 
     /* ── 职位卡片 ── */
-    .jobs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px;
-    }
+    .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 14px; }
 
     .job-card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
+      background: white; border-radius: 12px; padding: 18px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
       transition: transform 0.15s, box-shadow 0.15s;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      display: flex; flex-direction: column; gap: 9px;
       border-left: 4px solid #e0e0e0;
     }
-    .job-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-    }
+    .job-card:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0,0,0,0.11); }
     .job-card[data-visa="yes"]     { border-left-color: #00b894; }
     .job-card[data-visa="no"]      { border-left-color: #e74c3c; }
-    .job-card[data-visa="unknown"] { border-left-color: #bdc3c7; }
+    .job-card[data-status="saved"]   { border-left-color: #fdcb6e; }
+    .job-card[data-status="applied"] { border-left-color: #6c5ce7; }
 
-    .job-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #1a1a2e;
-      line-height: 1.4;
-    }
+    .job-title   { font-size: 0.97rem; font-weight: 600; color: #1a1a2e; line-height: 1.4; }
+    .job-company { font-size: 0.86rem; color: #555; }
 
-    .job-company {
-      font-size: 0.88rem;
-      color: #555;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .job-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      font-size: 0.78rem;
-    }
-    .tag {
-      padding: 3px 9px;
-      border-radius: 20px;
-      font-weight: 500;
-      white-space: nowrap;
-    }
+    .job-meta { display: flex; flex-wrap: wrap; gap: 5px; font-size: 0.75rem; }
+    .tag { padding: 2px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
     .tag-location { background: #e8f4fd; color: #1565c0; }
     .tag-platform { background: #fce4ec; color: #c62828; }
     .tag-date     { background: #f3e5f5; color: #6a1b9a; }
-    .tag-visa-yes     { background: #d5f5e3; color: #1e8449; font-weight: 600; }
+    .tag-salary   { background: #e8f5e9; color: #2e7d32; }
+    .tag-visa-yes     { background: #d5f5e3; color: #1e8449; font-weight: 700; }
     .tag-visa-no      { background: #fadbd8; color: #922b21; }
     .tag-visa-unknown { background: #f2f3f4; color: #717d7e; }
+    .tag-visa-na      { background: #eee; color: #888; }
 
-    .apply-btn {
-      margin-top: auto;
-      display: inline-block;
-      text-align: center;
-      background: #1a1a2e;
-      color: white;
-      padding: 9px 0;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 0.88rem;
-      font-weight: 500;
-      transition: background 0.2s;
-    }
-    .apply-btn:hover { background: #e94560; }
+    /* ── 操作按钮区 ── */
+    .card-actions { display: flex; gap: 6px; margin-top: auto; }
 
-    .empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: #aaa;
-      font-size: 1rem;
-      grid-column: 1 / -1;
+    .btn-apply {
+      flex: 1; text-align: center; background: #1a1a2e; color: white;
+      padding: 8px 0; border-radius: 8px; text-decoration: none;
+      font-size: 0.85rem; font-weight: 500; transition: background 0.2s;
+    }
+    .btn-apply:hover { background: #e94560; }
+
+    .btn-save, .btn-mark {
+      border: none; border-radius: 8px; padding: 8px 10px;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-save  { background: #ffeaa7; color: #6c4f00; }
+    .btn-save:hover  { background: #fdcb6e; }
+    .btn-save.active { background: #fdcb6e; color: #2d3436; }
+
+    .btn-mark  { background: #e8e0ff; color: #4a2dad; }
+    .btn-mark:hover  { background: #d1c4f8; }
+    .btn-mark.active { background: #6c5ce7; color: white; }
+
+    .status-label {
+      font-size: 0.72rem; font-weight: 600; text-align: center;
+      padding: 2px 0; color: #888;
     }
 
-    footer {
-      text-align: center;
-      padding: 24px;
-      font-size: 0.78rem;
-      color: #bbb;
-    }
+    .empty { text-align: center; padding: 60px 20px; color: #aaa; grid-column: 1/-1; }
+    footer { text-align: center; padding: 24px; font-size: 0.75rem; color: #bbb; }
   </style>
 </head>
 <body>
@@ -179,46 +121,57 @@
 <header>
   <div>
     <h1>金融实习<span>岗位看板</span></h1>
-    <div class="meta">数据来源: {{ filename }} &nbsp;|&nbsp; 墨尔本 · 澳洲</div>
+    <div class="meta">{{ filename }}</div>
   </div>
   <div class="header-stats">
-    <div class="badge badge-intl">✅ {{ intl_count }} 个接受国际学生</div>
+    <div class="badge badge-intl">✅ {{ intl_count }} 接受国际生</div>
+    <div class="badge badge-saved">⭐ {{ saved_count }} 已收藏</div>
+    <div class="badge badge-applied">✉️ {{ applied_count }} 已投递</div>
     <div class="badge badge-total">共 {{ total }} 个</div>
   </div>
 </header>
 
 <div class="container">
-
-  <!-- 过滤栏 -->
   <div class="filters">
-    <input type="text" id="search" placeholder="搜索职位名称或公司..." oninput="filterJobs()">
+    <input type="text" id="search" placeholder="搜索职位或公司..." oninput="filterJobs()">
 
     <select id="filterCompany" onchange="filterJobs()">
       <option value="">所有公司</option>
-      {% for c in companies %}
-      <option value="{{ c }}">{{ c }}</option>
-      {% endfor %}
+      {% for c in companies %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
     </select>
 
-    <!-- 签证筛选 -->
-    <div class="visa-toggle">
-      <button class="active" data-visa="" onclick="setVisa(this)">全部</button>
-      <button data-visa="yes"     onclick="setVisa(this)">✅ 接受国际学生</button>
-      <button data-visa="no"      onclick="setVisa(this)">❌ 不接受</button>
-      <button data-visa="unknown" onclick="setVisa(this)">❓ 待确认</button>
+    <select id="filterPlatform" onchange="filterJobs()">
+      <option value="">所有平台</option>
+      {% for p in platforms %}<option value="{{ p }}">{{ p }}</option>{% endfor %}
+    </select>
+
+    <div class="toggle-group" id="visaFilter">
+      <button class="active" data-visa="" onclick="setToggle(this,'visaFilter','visa')">全部</button>
+      <button class="visa" data-visa="yes"  onclick="setToggle(this,'visaFilter','visa')">✅ 国际生</button>
+      <button class="visa" data-visa="n/a"  onclick="setToggle(this,'visaFilter','visa')">🇨🇳 国内</button>
+      <button data-visa="unknown" onclick="setToggle(this,'visaFilter','visa')">❓ 待确认</button>
     </div>
 
-    <div class="count-label">显示 <b id="visibleCount">{{ total }}</b> / {{ total }} 条</div>
+    <div class="toggle-group" id="statusFilter">
+      <button class="active" data-st="" onclick="setToggle(this,'statusFilter','status')">全部</button>
+      <button class="status-saved"   data-st="saved"   onclick="setToggle(this,'statusFilter','status')">⭐ 收藏</button>
+      <button class="status-applied" data-st="applied" onclick="setToggle(this,'statusFilter','status')">✉️ 已投</button>
+    </div>
+
+    <div class="count-label">显示 <b id="visibleCount">{{ total }}</b> / {{ total }}</div>
   </div>
 
-  <!-- 职位卡片 -->
   <div class="jobs-grid" id="jobsGrid">
     {% for job in jobs %}
     {% set visa = job.get('visa_friendly', 'unknown') %}
+    {% set st   = job.get('status', 'new') %}
     <div class="job-card"
+         id="card-{{ job.job_id }}"
          data-title="{{ job.title | lower }}"
          data-company="{{ job.company }}"
-         data-visa="{{ visa }}">
+         data-platform="{{ job.platform }}"
+         data-visa="{{ visa }}"
+         data-status="{{ st }}">
 
       <div class="job-title">{{ job.title }}</div>
       <div class="job-company">🏢 {{ job.company }}</div>
@@ -226,66 +179,106 @@
       <div class="job-meta">
         <span class="tag tag-location">📍 {{ job.location }}</span>
         <span class="tag tag-platform">{{ job.platform }}</span>
-        {% if job.posted_date %}
-        <span class="tag tag-date">🕐 {{ job.posted_date }}</span>
+        {% if job.posted_date %}<span class="tag tag-date">🕐 {{ job.posted_date }}</span>{% endif %}
+        {% if job.salary and job.salary not in ['-/天', '/天', ''] %}
+          <span class="tag tag-salary">💰 {{ job.salary }}</span>
         {% endif %}
-        {% if visa == "yes" %}
-        <span class="tag tag-visa-yes">✅ 接受国际学生</span>
-        {% elif visa == "no" %}
-        <span class="tag tag-visa-no">❌ 仅PR/公民</span>
-        {% elif visa == "n/a" %}
-        <span class="tag tag-visa-unknown">🇨🇳 国内岗位</span>
-        {% else %}
-        <span class="tag tag-visa-unknown">❓ 签证待确认</span>
-        {% endif %}
+        {% if visa == "yes" %}<span class="tag tag-visa-yes">✅ 接受国际生</span>
+        {% elif visa == "no" %}<span class="tag tag-visa-no">❌ 仅PR/公民</span>
+        {% elif visa == "n/a" %}<span class="tag tag-visa-na">🇨🇳 国内岗位</span>
+        {% else %}<span class="tag tag-visa-unknown">❓ 待确认</span>{% endif %}
       </div>
 
-      <a class="apply-btn" href="{{ job.url }}" target="_blank" rel="noopener">
-        查看 &amp; 申请 →
-      </a>
+      <div class="card-actions">
+        <a class="btn-apply" href="{{ job.url }}" target="_blank" rel="noopener">查看 &amp; 申请 →</a>
+        <button class="btn-save {% if st == 'saved' or st == 'applied' %}active{% endif %}"
+                onclick="setStatus('{{ job.job_id }}', this, 'saved')" title="收藏">⭐</button>
+        <button class="btn-mark {% if st == 'applied' %}active{% endif %}"
+                onclick="setStatus('{{ job.job_id }}', this, 'applied')" title="标记已投递">✉️</button>
+      </div>
+      <div class="status-label" id="lbl-{{ job.job_id }}">
+        {% if st == 'saved' %}已收藏{% elif st == 'applied' %}已投递{% endif %}
+      </div>
     </div>
     {% endfor %}
-
-    <div class="empty" id="emptyMsg" style="display:none">没有找到匹配的职位</div>
+    <div class="empty" id="emptyMsg" style="display:none">没有匹配的职位</div>
   </div>
-
 </div>
 
-<footer>自动抓取 · 仅供参考 · 签证要求请以官网为准</footer>
+<footer>自动抓取 · 签证要求请以官网为准 · ⭐收藏 / ✉️标记已投</footer>
 
 <script>
-  let currentVisa = "";
+  let currentVisa = "", currentStatus = "";
 
-  function setVisa(btn) {
-    document.querySelectorAll(".visa-toggle button").forEach(b => b.classList.remove("active"));
+  function setToggle(btn, groupId, type) {
+    document.querySelectorAll(`#${groupId} button`).forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    currentVisa = btn.dataset.visa;
+    if (type === "visa")   currentVisa   = btn.dataset.visa || "";
+    if (type === "status") currentStatus = btn.dataset.st   || "";
     filterJobs();
   }
 
   function filterJobs() {
     const q       = document.getElementById("search").value.toLowerCase();
     const company = document.getElementById("filterCompany").value;
+    const platform= document.getElementById("filterPlatform").value;
     const cards   = document.querySelectorAll(".job-card");
     let visible   = 0;
 
     cards.forEach(card => {
-      const matchQ    = !q           || card.dataset.title.includes(q) || card.dataset.company.toLowerCase().includes(q);
-      const matchC    = !company     || card.dataset.company === company;
-      const matchVisa = !currentVisa || card.dataset.visa === currentVisa;
-
-      if (matchQ && matchC && matchVisa) {
-        card.style.display = "";
-        visible++;
-      } else {
-        card.style.display = "none";
-      }
+      const ok =
+        (!q        || card.dataset.title.includes(q) || card.dataset.company.toLowerCase().includes(q)) &&
+        (!company  || card.dataset.company === company) &&
+        (!platform || card.dataset.platform === platform) &&
+        (!currentVisa   || card.dataset.visa   === currentVisa) &&
+        (!currentStatus || card.dataset.status === currentStatus);
+      card.style.display = ok ? "" : "none";
+      if (ok) visible++;
     });
 
     document.getElementById("visibleCount").textContent = visible;
     document.getElementById("emptyMsg").style.display = visible === 0 ? "" : "none";
   }
-</script>
 
+  function setStatus(jobId, btn, newStatus) {
+    const card = document.getElementById("card-" + jobId);
+    const currentStatus = card.dataset.status;
+
+    // 再次点击同一状态 → 回到 new
+    const targetStatus = currentStatus === newStatus ? "new" : newStatus;
+
+    fetch("/api/status", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({job_id: jobId, status: targetStatus})
+    }).then(r => r.json()).then(data => {
+      if (!data.ok) return;
+
+      card.dataset.status = targetStatus;
+
+      const saveBtn = card.querySelector(".btn-save");
+      const markBtn = card.querySelector(".btn-mark");
+      const lbl     = document.getElementById("lbl-" + jobId);
+
+      saveBtn.classList.toggle("active", targetStatus === "saved" || targetStatus === "applied");
+      markBtn.classList.toggle("active", targetStatus === "applied");
+      lbl.textContent = targetStatus === "saved" ? "已收藏" : targetStatus === "applied" ? "已投递" : "";
+
+      // 更新顶部徽章计数
+      updateBadgeCounts();
+    });
+  }
+
+  function updateBadgeCounts() {
+    const cards   = document.querySelectorAll(".job-card");
+    let saved = 0, applied = 0;
+    cards.forEach(c => {
+      if (c.dataset.status === "saved")   saved++;
+      if (c.dataset.status === "applied") applied++;
+    });
+    document.querySelector(".badge-saved").textContent   = `⭐ ${saved} 已收藏`;
+    document.querySelector(".badge-applied").textContent = `✉️ ${applied} 已投递`;
+  }
+</script>
 </body>
 </html>

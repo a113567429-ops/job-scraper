@@ -78,6 +78,16 @@ def upsert_jobs(jobs: list[Job]) -> list[Job]:
     return new_jobs
 
 
+def update_status(job_id: str, status: str):
+    """更新职位状态：new / saved / applied"""
+    with _connect() as conn:
+        conn.execute(
+            "UPDATE jobs SET status = ? WHERE job_id = ?",
+            (status, job_id),
+        )
+        conn.commit()
+
+
 def mark_notified(job_ids: list[str]):
     """将指定职位标记为已通知"""
     with _connect() as conn:
