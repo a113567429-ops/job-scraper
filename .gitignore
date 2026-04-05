@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 输出文件（可选：如果不想把 CSV 也推上去，取消注释）
+# output/
+
+# 系统文件
+.DS_Store
+Thumbs.db

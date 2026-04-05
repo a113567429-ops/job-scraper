@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>金融实习岗位看板</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+    }
+
+    /* ── 顶部导航 ── */
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    header h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: 0.5px; }
+    header h1 span { color: #e94560; }
+    .meta { font-size: 0.78rem; color: #aaa; margin-top: 2px; }
+
+    .header-stats { display: flex; gap: 12px; align-items: center; }
+    .badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .badge-total   { background: #e94560; color: white; }
+    .badge-intl    { background: #00b894; color: white; }
+
+    /* ── 主体布局 ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+
+    /* ── 过滤栏 ── */
+    .filters {
+      background: white;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .filters input, .filters select {
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      background: white;
+      cursor: pointer;
+    }
+    .filters input { flex: 1; min-width: 180px; cursor: text; }
+    .filters input:focus, .filters select:focus { border-color: #e94560; }
+
+    /* 签证切换按钮组 */
+    .visa-toggle { display: flex; gap: 0; border-radius: 8px; overflow: hidden; border: 1.5px solid #e0e0e0; }
+    .visa-toggle button {
+      border: none; padding: 8px 14px; font-size: 0.85rem; cursor: pointer;
+      background: white; color: #555; transition: background 0.15s, color 0.15s;
+      font-weight: 500;
+    }
+    .visa-toggle button.active { background: #00b894; color: white; }
+    .visa-toggle button:not(:last-child) { border-right: 1.5px solid #e0e0e0; }
+
+    .count-label {
+      margin-left: auto;
+      font-size: 0.85rem;
+      color: #888;
+      white-space: nowrap;
+    }
+    .count-label b { color: #e94560; }
+
+    /* ── 职位卡片 ── */
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .job-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-left: 4px solid #e0e0e0;
+    }
+    .job-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+    .job-card[data-visa="yes"]     { border-left-color: #00b894; }
+    .job-card[data-visa="no"]      { border-left-color: #e74c3c; }
+    .job-card[data-visa="unknown"] { border-left-color: #bdc3c7; }
+
+    .job-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      line-height: 1.4;
+    }
+
+    .job-company {
+      font-size: 0.88rem;
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.78rem;
+    }
+    .tag {
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .tag-location { background: #e8f4fd; color: #1565c0; }
+    .tag-platform { background: #fce4ec; color: #c62828; }
+    .tag-date     { background: #f3e5f5; color: #6a1b9a; }
+    .tag-visa-yes     { background: #d5f5e3; color: #1e8449; font-weight: 600; }
+    .tag-visa-no      { background: #fadbd8; color: #922b21; }
+    .tag-visa-unknown { background: #f2f3f4; color: #717d7e; }
+
+    .apply-btn {
+      margin-top: auto;
+      display: inline-block;
+      text-align: center;
+      background: #1a1a2e;
+      color: white;
+      padding: 9px 0;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .apply-btn:hover { background: #e94560; }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+      font-size: 1rem;
+      grid-column: 1 / -1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.78rem;
+      color: #bbb;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>金融实习<span>岗位看板</span></h1>
+    <div class="meta">数据来源: {{ filename }} &nbsp;|&nbsp; 墨尔本 · 澳洲</div>
+  </div>
+  <div class="header-stats">
+    <div class="badge badge-intl">✅ {{ intl_count }} 个接受国际学生</div>
+    <div class="badge badge-total">共 {{ total }} 个</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- 过滤栏 -->
+  <div class="filters">
+    <input type="text" id="search" placeholder="搜索职位名称或公司..." oninput="filterJobs()">
+
+    <select id="filterCompany" onchange="filterJobs()">
+      <option value="">所有公司</option>
+      {% for c in companies %}
+      <option value="{{ c }}">{{ c }}</option>
+      {% endfor %}
+    </select>
+
+    <!-- 签证筛选 -->
+    <div class="visa-toggle">
+      <button class="active" data-visa="" onclick="setVisa(this)">全部</button>
+      <button data-visa="yes"     onclick="setVisa(this)">✅ 接受国际学生</button>
+      <button data-visa="no"      onclick="setVisa(this)">❌ 不接受</button>
+      <button data-visa="unknown" onclick="setVisa(this)">❓ 待确认</button>
+    </div>
+
+    <div class="count-label">显示 <b id="visibleCount">{{ total }}</b> / {{ total }} 条</div>
+  </div>
+
+  <!-- 职位卡片 -->
+  <div class="jobs-grid" id="jobsGrid">
+    {% for job in jobs %}
+    {% set visa = job.get('visa_friendly', 'unknown') %}
+    <div class="job-card"
+         data-title="{{ job.title | lower }}"
+         data-company="{{ job.company }}"
+         data-visa="{{ visa }}">
+
+      <div class="job-title">{{ job.title }}</div>
+      <div class="job-company">🏢 {{ job.company }}</div>
+
+      <div class="job-meta">
+        <span class="tag tag-location">📍 {{ job.location }}</span>
+        <span class="tag tag-platform">{{ job.platform }}</span>
+        {% if job.posted_date %}
+        <span class="tag tag-date">🕐 {{ job.posted_date }}</span>
+        {% endif %}
+        {% if visa == "yes" %}
+        <span class="tag tag-visa-yes">✅ 接受国际学生</span>
+        {% elif visa == "no" %}
+        <span class="tag tag-visa-no">❌ 仅PR/公民</span>
+        {% else %}
+        <span class="tag tag-visa-unknown">❓ 签证待确认</span>
+        {% endif %}
+      </div>
+
+      <a class="apply-btn" href="{{ job.url }}" target="_blank" rel="noopener">
+        查看 &amp; 申请 →
+      </a>
+    </div>
+    {% endfor %}
+
+    <div class="empty" id="emptyMsg" style="display:none">没有找到匹配的职位</div>
+  </div>
+
+</div>
+
+<footer>自动抓取 · 仅供参考 · 签证要求请以官网为准</footer>
+
+<script>
+  let currentVisa = "";
+
+  function setVisa(btn) {
+    document.querySelectorAll(".visa-toggle button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentVisa = btn.dataset.visa;
+    filterJobs();
+  }
+
+  function filterJobs() {
+    const q       = document.getElementById("search").value.toLowerCase();
+    const company = document.getElementById("filterCompany").value;
+    const cards   = document.querySelectorAll(".job-card");
+    let visible   = 0;
+
+    cards.forEach(card => {
+      const matchQ    = !q           || card.dataset.title.includes(q) || card.dataset.company.toLowerCase().includes(q);
+      const matchC    = !company     || card.dataset.company === company;
+      const matchVisa = !currentVisa || card.dataset.visa === currentVisa;
+
+      if (matchQ && matchC && matchVisa) {
+        card.style.display = "";
+        visible++;
+      } else {
+        card.style.display = "none";
+      }
+    });
+
+    document.getElementById("visibleCount").textContent = visible;
+    document.getElementById("emptyMsg").style.display = visible === 0 ? "" : "none";
+  }
+</script>
+
+</body>
+</html>
