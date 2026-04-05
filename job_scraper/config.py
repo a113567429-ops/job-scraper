@@ -56,3 +56,7 @@ EMAIL_RECEIVERS = (
 )
 
 WECHAT_WEBHOOK = os.getenv("WECHAT_WEBHOOK", "SCT334014TKgt1eub7prteLz4SaFagHDDj")
+
+# ---------- 飞书 API（读取实时实习表格）----------
+FEISHU_APP_ID     = os.getenv("FEISHU_APP_ID",     "")   # 创建应用后填入
+FEISHU_APP_SECRET = os.getenv("FEISHU_APP_SECRET", "")   # 创建应用后填入

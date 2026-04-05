@@ -11,7 +11,7 @@ from datetime import datetime
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
-from job_scraper.scrapers import gradconnection, linkedin, shixiseng
+from job_scraper.scrapers import gradconnection, linkedin, shixiseng, feishu
 from job_scraper.storage import database
 from job_scraper.notifiers import email_notifier, wechat_notifier
 from job_scraper.models import Job
@@ -57,6 +57,9 @@ def main():
 
     print("\n>>> 实习僧（上海/北京/深圳）")
     all_jobs.extend(shixiseng.scrape())
+
+    print("\n>>> 飞书文档（实时实习表格）")
+    all_jobs.extend(feishu.scrape())
 
     print(f"\n本次爬取合计：{len(all_jobs)} 个职位")
 
