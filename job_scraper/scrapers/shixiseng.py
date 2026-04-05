@@ -5,6 +5,7 @@
 - 服务端渲染，无需 Playwright
 """
 
+import re
 import time
 import httpx
 from bs4 import BeautifulSoup
@@ -37,6 +38,11 @@ TITLE_EXCLUDE = [
 ]
 
 
+def _clean(text: str) -> str:
+    """清除实习僧字体混淆字符（Unicode私用区 U+E000–U+F8FF）"""
+    return re.sub(r"[\uE000-\uF8FF]", "", text).strip()
+
+
 def _matches(title: str) -> bool:
     t = title.lower()
     return (
@@ -46,8 +52,8 @@ def _matches(title: str) -> bool:
 
 
 def _clean_title(tag) -> str:
-    """实习僧用自定义字体混淆，直接取元素文本（已解码）"""
-    return tag.get_text(strip=True)
+    """取元素文本并过滤字体混淆字符"""
+    return _clean(tag.get_text(strip=True))
 
 
 def _fetch_page(keyword: str, city: str, page: int) -> list[Job]:
@@ -83,7 +89,7 @@ def _parse_card(card, city: str) -> Job | None:
 
         # 公司名称（右侧栏）
         company_tag = card.select_one("div.intern-detail__company a.title")
-        company = company_tag.get("title", "") or (
+        company = _clean(company_tag.get("title", "")) or (
             _clean_title(company_tag) if company_tag else "未知公司"
         )
 
@@ -92,7 +98,7 @@ def _parse_card(card, city: str) -> Job | None:
 
         # 城市
         city_tag = card.select_one("span.city")
-        location = city_tag.get_text(strip=True) if city_tag else city
+        location = _clean(city_tag.get_text(strip=True)) if city_tag else city
 
         # 链接
         link_tag = card.select_one("div.intern-detail__job a.title")
