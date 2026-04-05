@@ -5,7 +5,6 @@
 - 服务端渲染，无需 Playwright
 """
 
-import re
 import time
 import httpx
 from bs4 import BeautifulSoup
@@ -88,10 +87,8 @@ def _parse_card(card, city: str) -> Job | None:
             _clean_title(company_tag) if company_tag else "未知公司"
         )
 
-        # 薪资（元/天）
-        salary_tag = card.select_one("span.day")
-        salary = salary_tag.get_text(strip=True) if salary_tag else ""
-        salary = re.sub(r"\s+", "", salary)
+        # 薪资：实习僧用自定义字体混淆数字，爬取结果为乱码，统一显示"见详情"
+        salary = "见详情"
 
         # 城市
         city_tag = card.select_one("span.city")
@@ -100,7 +97,7 @@ def _parse_card(card, city: str) -> Job | None:
         # 链接
         link_tag = card.select_one("div.intern-detail__job a.title")
         href = link_tag.get("href", "") if link_tag else ""
-        url = re.sub(r"\?.*", "", href)  # 去掉 tracking 参数
+        url = href.split("?")[0]  # 去掉 tracking 参数
 
         if not title or not url:
             return None
