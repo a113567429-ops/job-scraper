@@ -233,6 +233,8 @@
         <span class="tag tag-visa-yes">✅ 接受国际学生</span>
         {% elif visa == "no" %}
         <span class="tag tag-visa-no">❌ 仅PR/公民</span>
+        {% elif visa == "n/a" %}
+        <span class="tag tag-visa-unknown">🇨🇳 国内岗位</span>
         {% else %}
         <span class="tag tag-visa-unknown">❓ 签证待确认</span>
         {% endif %}
